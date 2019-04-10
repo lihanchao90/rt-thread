@@ -17,6 +17,7 @@
 #define RT_TICK_PER_SECOND	100
 // <section name="RT_DEBUG" description="Kernel Debug Configuration" default="true" >
 #define RT_DEBUG
+#define RT_DEBUG_COLOR
 // <bool name="RT_THREAD_DEBUG" description="Thread debug enable" default="false" />
 // #define RT_THREAD_DEBUG
 // <bool name="RT_USING_OVERFLOW_CHECK" description="Thread stack over flow detect" default="true" />
@@ -185,8 +186,6 @@
 
 // <section name="RT_USING_MODULE" description="Application module" default="true" >
 // #define RT_USING_MODULE
-// <bool name="RT_USING_LIBDL" description="Using dynamic library" default="true" />
-// #define RT_USING_LIBDL
 // </section>
 
 // <section name="RT_USING_RTGUI" description="RTGUI, a graphic user interface" default="true" >

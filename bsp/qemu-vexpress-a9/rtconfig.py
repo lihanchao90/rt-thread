@@ -2,14 +2,15 @@ import os
 
 # toolchains options
 ARCH='arm'
-CPU='vexpress-a9'
+CPU='cortex-a'
 CROSS_TOOL='gcc'
 
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')
 
+# only support GNU GCC compiler.
 PLATFORM    = 'gcc'
-EXEC_PATH   = '/opt/gcc-arm-none-eabi-4_8-2014q1_gri/bin'
+EXEC_PATH   = '/usr/bin'
 
 if os.getenv('RTT_EXEC_PATH'):
     EXEC_PATH = os.getenv('RTT_EXEC_PATH')
@@ -32,7 +33,7 @@ if PLATFORM == 'gcc':
 
     DEVICE = ' -march=armv7-a -marm -msoft-float'
     CFLAGS = DEVICE + ' -Wall'
-    AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -D__ASSEMBLY__'
+    AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -D__ASSEMBLY__ -I.'
     LINK_SCRIPT = 'link.lds'
     LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,system_vectors'+\
                       ' -T %s' % LINK_SCRIPT

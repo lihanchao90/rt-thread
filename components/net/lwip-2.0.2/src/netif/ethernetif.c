@@ -1,25 +1,6 @@
 /*
- * File      : ethernetif.c
- * This file is part of RT-Thread RTOS
- * COPYRIGHT (C) 2006 - 2010, RT-Thread Development Team
- *
- * The license and distribution terms for this file may be
- * found in the file LICENSE in this distribution or at
- * http://www.rt-thread.org/license/LICENSE
- *
- * Change Logs:
- * Date           Author       Notes
- * 2010-07-07     Bernard      fix send mail to mailbox issue.
- * 2011-07-30     mbbill       port lwIP 1.4.0 to RT-Thread
- * 2012-04-10     Bernard      add more compatible with RT-Thread.
- * 2012-11-12     Bernard      The network interface can be initialized
- *                             after lwIP initialization.
- * 2013-02-28     aozima       fixed list_tcps bug: ipaddr_ntoa isn't reentrant.
- * 2016-08-18     Bernard      port to lwIP 2.0.0
- */
-
-/*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+ * COPYRIGHT (C) 2006-2018, RT-Thread Development Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -48,13 +29,15 @@
  *
  * Author: Adam Dunkels <adam@sics.se>
  *
- */
-
-/*
- * This file is a skeleton for developing Ethernet network interface
- * drivers for lwIP. Add code to the low_level functions and do a
- * search-and-replace for the word "ethernetif" to replace it with
- * something that better describes your network interface.
+ * Change Logs:
+ * Date           Author       Notes
+ * 2010-07-07     Bernard      fix send mail to mailbox issue.
+ * 2011-07-30     mbbill       port lwIP 1.4.0 to RT-Thread
+ * 2012-04-10     Bernard      add more compatible with RT-Thread.
+ * 2012-11-12     Bernard      The network interface can be initialized
+ *                             after lwIP initialization.
+ * 2013-02-28     aozima       fixed list_tcps bug: ipaddr_ntoa isn't reentrant.
+ * 2016-08-18     Bernard      port to lwIP 2.0.0
  */
 
 #include "lwip/opt.h"
@@ -222,7 +205,7 @@ static err_t eth_netif_device_init(struct netif *netif)
 }
 
 /* Keep old drivers compatible in RT-Thread */
-rt_err_t eth_device_init_with_flag(struct eth_device *dev, char *name, rt_uint16_t flags)
+rt_err_t eth_device_init_with_flag(struct eth_device *dev, const char *name, rt_uint16_t flags)
 {
     struct netif* netif;
 
@@ -286,7 +269,7 @@ rt_err_t eth_device_init_with_flag(struct eth_device *dev, char *name, rt_uint16
     return RT_EOK;
 }
 
-rt_err_t eth_device_init(struct eth_device * dev, char *name)
+rt_err_t eth_device_init(struct eth_device * dev, const char *name)
 {
     rt_uint16_t flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
 
@@ -346,7 +329,7 @@ static void eth_tx_thread_entry(void* parameter)
 
     while (1)
     {
-        if (rt_mb_recv(&eth_tx_thread_mb, (rt_uint32_t*)&msg, RT_WAITING_FOREVER) == RT_EOK)
+        if (rt_mb_recv(&eth_tx_thread_mb, (rt_ubase_t *)&msg, RT_WAITING_FOREVER) == RT_EOK)
         {
             struct eth_device* enetif;
 
@@ -378,7 +361,7 @@ static void eth_rx_thread_entry(void* parameter)
 
     while (1)
     {
-        if (rt_mb_recv(&eth_rx_thread_mb, (rt_uint32_t*)&device, RT_WAITING_FOREVER) == RT_EOK)
+        if (rt_mb_recv(&eth_rx_thread_mb, (rt_ubase_t *)&device, RT_WAITING_FOREVER) == RT_EOK)
         {
             struct pbuf *p;
 
